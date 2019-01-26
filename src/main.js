@@ -12,9 +12,13 @@ import installPlugin from '@/plugin'
 import 'iview/dist/styles/iview.css'
 import './index.less'
 import '@/assets/icons/iconfont.css'
+
+
+// console.log(abp.auth.getToken())
+
 // 实际打包时应该不引入mock
 /* eslint-disable */
-if (process.env.NODE_ENV !== 'production') require('@/mock')
+// if (process.env.NODE_ENV !== 'production') require('@/mock')
 
 Vue.use(iView, {
   i18n: (key, value) => i18n.t(key, value)
@@ -35,6 +39,13 @@ Vue.prototype.$config = config
  * 注册指令
  */
 importDirective(Vue)
+
+// axios.request({
+//   url: '/AbpUserConfiguration/GetAll',
+//   method: 'get'
+// }).then(res => {
+//   console.log(res)
+// })
 
 /* eslint-disable no-new */
 new Vue({

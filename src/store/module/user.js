@@ -1,12 +1,12 @@
-import { login, logout, getUserInfo } from '@/api/user'
-import { setToken, getToken } from '@/libs/util'
+import { login, logout, getUserInfo, getAbpUserConfiguration } from '@/api/user'
+import abp from '@/libs/abp.js'
 
 export default {
   state: {
     userName: '',
     userId: '',
     avatorImgPath: '',
-    token: getToken(),
+    token: abp.auth.getToken(),
     access: '',
     hasGetInfo: false
   },
@@ -23,9 +23,9 @@ export default {
     setAccess (state, access) {
       state.access = access
     },
-    setToken (state, token) {
+    setToken (state, { token, tokenExpireDate }) {
       state.token = token
-      setToken(token)
+      abp.auth.setToken(token, tokenExpireDate)
     },
     setHasGetInfo (state, status) {
       state.hasGetInfo = status
@@ -33,15 +33,16 @@ export default {
   },
   actions: {
     // 登录
-    handleLogin ({ commit }, {userName, password}) {
+    handleLogin ({ commit }, { userName, password, rememberMe }) {
       userName = userName.trim()
       return new Promise((resolve, reject) => {
         login({
           userName,
           password
         }).then(res => {
-          const data = res.data
-          commit('setToken', data.token)
+          const data = res.data.result
+          let tokenExpireDate = rememberMe ? (new Date(new Date().getTime() + 1000 * data.expireInSeconds)) : undefined
+          commit('setToken', { token: data.accessToken, tokenExpireDate })
           resolve()
         }).catch(err => {
           reject(err)
@@ -66,22 +67,21 @@ export default {
     },
     // 获取用户相关信息
     getUserInfo ({ state, commit }) {
-      return new Promise((resolve, reject) => {
-        try {
-          getUserInfo(state.token).then(res => {
-            const data = res.data
-            commit('setAvator', data.avator)
-            commit('setUserName', data.name)
-            commit('setUserId', data.user_id)
-            commit('setAccess', data.access)
-            commit('setHasGetInfo', true)
-            resolve(data)
-          }).catch(err => {
-            reject(err)
-          })
-        } catch (error) {
-          reject(error)
-        }
+      return Promise.all([getUserInfo(), getAbpUserConfiguration()]).then(res => {
+        const data = res[0].data.result.user
+        commit('setUserName', data.name)
+        commit('setUserId', data.id)
+        commit('setHasGetInfo', true)
+        const grantedPermissions = res[1].data.result.auth.grantedPermissions
+        let grantedPermissionsArry = Object.entries(grantedPermissions)
+        const newgrantedPermissionsArry = grantedPermissionsArry.filter(item => {
+          return item[1] === 'true'
+        })
+        commit('setAccess', newgrantedPermissionsArry.map(item => {
+          return item[0]
+        }))
+      }).catch((err) => {
+        return err
       })
     }
   }
