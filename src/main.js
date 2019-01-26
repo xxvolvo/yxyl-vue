@@ -13,7 +13,6 @@ import 'iview/dist/styles/iview.css'
 import './index.less'
 import '@/assets/icons/iconfont.css'
 
-
 // console.log(abp.auth.getToken())
 
 // 实际打包时应该不引入mock
