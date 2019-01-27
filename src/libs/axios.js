@@ -45,7 +45,7 @@ class HttpRequest {
       if (token) {
         config.headers.common['Authorization'] = 'Bearer ' + token
       }
-      config.headers.common['.AspNetCore.Culture'] = 'zh-CN'
+      config.headers.common['.AspNetCore.Culture'] = 'zh-Hans'
       //  abp.utils.getCookieValue("Abp.Localization.CultureName");
       config.headers.common['Abp.TenantId'] = null
       // abp.multiTenancy.getTenantIdCookie();
