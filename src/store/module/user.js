@@ -1,14 +1,20 @@
-import { login, getUserInfo, getAbpUserConfiguration } from '@/api/user'
+import { login, getUserInfo, getAbpUserConfiguration, getAll } from '@/api/user'
 import abp from '@/libs/abp.js'
 
 export default {
+  namespaced: true,
   state: {
     userName: '',
     userId: '',
     avatorImgPath: '',
     token: abp.auth.getToken(),
     access: '',
-    hasGetInfo: false
+    hasGetInfo: false,
+    totalCount: 0,
+    pageSize: 10,
+    currentPage: 1,
+    list: [],
+    loading: false
   },
   mutations: {
     setAvator (state, avatorPath) {
@@ -29,6 +35,19 @@ export default {
     },
     setHasGetInfo (state, status) {
       state.hasGetInfo = status
+    },
+    setList (state, { list, totalCount }) {
+      state.list = list
+      state.totalCount = totalCount
+    },
+    setCurrentPage (state, { currentPage }) {
+      state.currentPage = currentPage
+    },
+    setLoading (state) {
+      state.loading = !state.loading
+    },
+    setPageSize (state, { pageSize }) {
+      state.pageSize = pageSize
     }
   },
   actions: {
@@ -40,7 +59,7 @@ export default {
           userName,
           password
         }).then(res => {
-          const data = res.data.result
+          const data = res
           let tokenExpireDate = rememberMe ? (new Date(new Date().getTime() + 1000 * data.expireInSeconds)) : undefined
           commit('setToken', { token: data.accessToken, tokenExpireDate })
           resolve()
@@ -68,11 +87,11 @@ export default {
     // 获取用户相关信息
     getUserInfo ({ state, commit }) {
       return Promise.all([getUserInfo(), getAbpUserConfiguration()]).then(res => {
-        const data = res[0].data.result.user
+        const data = res[0].user
         commit('setUserName', data.name)
         commit('setUserId', data.id)
         commit('setHasGetInfo', true)
-        const grantedPermissions = res[1].data.result.auth.grantedPermissions
+        const grantedPermissions = res[1].auth.grantedPermissions
         let grantedPermissionsArry = Object.entries(grantedPermissions)
         const newgrantedPermissionsArry = grantedPermissionsArry.filter(item => {
           return item[1] === 'true'
@@ -82,6 +101,18 @@ export default {
         }))
       }).catch((err) => {
         return err
+      })
+    },
+    getAll ({ commit, state }, { page }) {
+      commit('setLoading')
+      let skipCount = (page - 1) * state.pageSize
+      let maxResultCount = state.pageSize
+      getAll({ skipCount, maxResultCount }).then(res => {
+        commit('setCurrentPage', { currentPage: page })
+        commit('setList', { list: res.items, totalCount: res.totalCount })
+        commit('setLoading')
+      }).catch(error => {
+        console.log(error)
       })
     }
   }

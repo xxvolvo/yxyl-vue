@@ -22,7 +22,7 @@ export default {
     LoginForm
   },
   methods: {
-    ...mapActions(['handleLogin', 'getUserInfo']),
+    ...mapActions('user', ['handleLogin', 'getUserInfo']),
     handleSubmit ({ userName, password, rememberMe }) {
       this.handleLogin({ userName, password, rememberMe }).then(res => {
         this.getUserInfo().then(res => {

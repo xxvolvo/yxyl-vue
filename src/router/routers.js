@@ -1,5 +1,5 @@
 import Main from '@/components/main'
-import parentView from '@/components/parent-view'
+// import parentView from '@/components/parent-view'
 
 /**
  * iview-admin中meta除了原生参数外可配置的参数:
@@ -63,9 +63,20 @@ export default [
         name: 'role',
         meta: {
           icon: 'md-funnel',
+          access: ['Pages.Roles'],
           title: '角色管理'
         },
         component: () => import('@/view/role/role.vue')
+      },
+      {
+        path: 'user',
+        name: 'user',
+        meta: {
+          icon: 'md-funnel',
+          access: ['Pages.Users'],
+          title: '用户管理'
+        },
+        component: () => import('@/view/user/user.vue')
       }
 
     ]

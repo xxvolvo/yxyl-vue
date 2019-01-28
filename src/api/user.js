@@ -32,3 +32,11 @@ export const getAbpUserConfiguration = () => {
     method: 'get'
   })
 }
+
+export const getAll = ({ skipCount, maxResultCount }) => {
+  return axios.request({
+    url: '/api/services/app/User/GetAll',
+    params: { skipCount, maxResultCount },
+    method: 'get'
+  })
+}
