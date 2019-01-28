@@ -15,6 +15,9 @@
       </Input>
     </FormItem>
     <FormItem>
+      <Checkbox v-model="form.rememberMe" size="large" class="rememberMe-chk">记住我</Checkbox>
+    </FormItem>
+    <FormItem>
       <Button @click="handleSubmit" type="primary" long>登录</Button>
     </FormItem>
   </Form>
@@ -26,25 +29,22 @@ export default {
     userNameRules: {
       type: Array,
       default: () => {
-        return [
-          { required: true, message: '账号不能为空', trigger: 'blur' }
-        ]
+        return [{ required: true, message: '账号不能为空', trigger: 'blur' }]
       }
     },
     passwordRules: {
       type: Array,
       default: () => {
-        return [
-          { required: true, message: '密码不能为空', trigger: 'blur' }
-        ]
+        return [{ required: true, message: '密码不能为空', trigger: 'blur' }]
       }
     }
   },
   data () {
     return {
       form: {
-        userName: 'super_admin',
-        password: ''
+        userName: 'admin',
+        password: '123qwe',
+        rememberMe: false
       }
     }
   },
@@ -58,11 +58,12 @@ export default {
   },
   methods: {
     handleSubmit () {
-      this.$refs.loginForm.validate((valid) => {
+      this.$refs.loginForm.validate(valid => {
         if (valid) {
           this.$emit('on-success-valid', {
             userName: this.form.userName,
-            password: this.form.password
+            password: this.form.password,
+            rememberMe: this.form.rememberMe
           })
         }
       })
@@ -70,3 +71,8 @@ export default {
   }
 }
 </script>
+<style lang="less">
+.rememberMe-chk {
+  float: right;
+}
+</style>

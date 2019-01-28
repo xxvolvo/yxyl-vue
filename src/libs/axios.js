@@ -1,6 +1,7 @@
 import axios from 'axios'
 import store from '@/store'
 // import { Spin } from 'iview'
+
 const addErrorLog = errorInfo => {
   const { statusText, status, request: { responseURL } } = errorInfo
   let info = {
@@ -40,6 +41,14 @@ class HttpRequest {
         // Spin.show() // 不建议开启，因为界面不友好
       }
       this.queue[url] = true
+      const token = store.state.user.token
+      if (token) {
+        config.headers.common['Authorization'] = 'Bearer ' + token
+      }
+      config.headers.common['.AspNetCore.Culture'] = 'zh-Hans'
+      //  abp.utils.getCookieValue("Abp.Localization.CultureName");
+      config.headers.common['Abp.TenantId'] = null
+      // abp.multiTenancy.getTenantIdCookie();
       return config
     }, error => {
       return Promise.reject(error)
@@ -47,8 +56,7 @@ class HttpRequest {
     // 响应拦截
     instance.interceptors.response.use(res => {
       this.destroy(url)
-      const { data, status } = res
-      return { data, status }
+      return res
     }, error => {
       this.destroy(url)
       addErrorLog(error.response)
