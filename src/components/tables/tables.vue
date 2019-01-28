@@ -8,6 +8,7 @@
         show-sizer
         :transfer="transfer"
         :current="current"
+        :page-size="pageSize"
         @on-change="onChange"
         @on-page-size-change="onPageSizeChange"
       />
@@ -41,11 +42,15 @@ export default {
     current: {
       type: Number,
       default: 1
+    },
+    pageSize: {
+      type: Number,
+      default: 10
     }
   },
   methods: {
     onChange(page) {
-      this.$emit("on-change", { currentPage: page});
+      this.$emit("on-change", { currentPage: page });
     },
     onPageSizeChange(pageSize) {
       this.$emit("on-page-size-change", { pageSize: pageSize });
