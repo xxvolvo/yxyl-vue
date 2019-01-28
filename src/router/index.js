@@ -4,6 +4,7 @@ import routes from './routers'
 import store from '@/store'
 import iView from 'iview'
 import { setToken, getToken, canTurnTo } from '@/libs/util'
+import { setTitle } from '@/libs/tools'
 import config from '@/config'
 const { homeName } = config
 
@@ -22,6 +23,7 @@ const turnTo = (to, access, next) => {
 router.beforeEach((to, from, next) => {
   iView.LoadingBar.start()
   const token = getToken()
+  to.meta && to.meta.title && setTitle(to.meta.title)
   if (!token && to.name !== LOGIN_PAGE_NAME) {
     // 未登录且要跳转的页面不是登录页
     next({
