@@ -1,5 +1,7 @@
 <template>
   <div>
+    <Input v-model="test"/>
+    <button @click="handleClick">点击</button>
     <Tables
       :loading="loading"
       :columns="columns"
@@ -8,6 +10,7 @@
       :current="current"
       :pageSize="pageSize"
       :nameSpace="nameSpace"
+      :extend="extend"
     ></Tables>
   </div>
 </template>
@@ -44,8 +47,29 @@ export default {
         return this.$store.state.role.currentPage
       },
       set (value) {
-        this.$store.commit('role/currentPage', value)
+        this.$store.state.role.currentPage = value
       }
+    },
+    test: {
+      get () {
+        return this.$store.state.role.extend.Keyword
+      },
+      set (value) {
+        this.$store.state.role.extend.Keyword = value
+        this.$store.commit('role/setCurrentPage', { currentPage: 1 })
+      }
+    },
+    extend: {
+      get () {
+        return this.$store.state.role.extend
+      }
+    }
+  },
+  methods: {
+    handleClick () {
+      this.$store.dispatch('role/getAll', {
+        page: this.current
+      })
     }
   }
 }

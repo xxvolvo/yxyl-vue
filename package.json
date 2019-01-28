@@ -19,6 +19,7 @@
     "countup": "^1.8.2",
     "cropperjs": "^1.4.3",
     "dayjs": "^1.8.0",
+    "deepclone": "^1.0.2",
     "echarts": "^4.0.4",
     "html2canvas": "^1.0.0-alpha.12",
     "iview": "^3.2.2",

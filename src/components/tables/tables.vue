@@ -51,6 +51,10 @@ export default {
     nameSpace: {
       type: String,
       default: ''
+    },
+    extend: {
+      type: Object,
+      default: () => ({})
     }
   },
   methods: {
@@ -67,7 +71,8 @@ export default {
           pageSize: pageSize
         })
         this.$store.dispatch(`${this.nameSpace}/getAll`, {
-          page: this.current
+          page: this.current,
+          data: this.extend
         })
       } else {
         this.$emit('on-page-size-change', { pageSize: pageSize })
@@ -77,7 +82,8 @@ export default {
   mounted () {
     if (this.nameSpace) {
       this.$store.dispatch(`${this.nameSpace}/getAll`, {
-        page: this.current
+        page: this.current,
+        data: this.extend
       })
     }
   }

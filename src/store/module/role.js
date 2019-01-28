@@ -7,29 +7,38 @@ export default {
     pageSize: 10,
     currentPage: 1,
     list: [],
-    loading: false
+    loading: false,
+    extend: {}
   },
   mutations: {
-    setList(state, { list, totalCount }) {
+    setList (state, { list, totalCount }) {
       state.list = list
       state.totalCount = totalCount
     },
-    setCurrentPage(state, { currentPage }) {
+    setCurrentPage (state, { currentPage }) {
       state.currentPage = currentPage
     },
-    setLoading(state) {
+    setLoading (state) {
       state.loading = !state.loading
     },
-    setPageSize(state, { pageSize }) {
+    setPageSize (state, { pageSize }) {
       state.pageSize = pageSize
+    },
+    setExtend (state, { extend }) {
+      state.extend = extend
     }
   },
   actions: {
-    getAll({ commit, state }, { page }) {
+    getAll ({ commit, state }, { page }) {
       commit('setLoading')
       let skipCount = (page - 1) * state.pageSize
       let maxResultCount = state.pageSize
-      getAll({ skipCount, maxResultCount }).then(res => {
+      var model = { skipCount, maxResultCount }
+      if (state.extend) {
+        Object.assign(model, state.extend)
+      }
+
+      getAll(model).then(res => {
         commit('setCurrentPage', { currentPage: page })
         commit('setList', { list: res.items, totalCount: res.totalCount })
         commit('setLoading')
