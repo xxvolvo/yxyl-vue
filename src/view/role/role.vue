@@ -7,6 +7,7 @@
       :total="totalCount"
       @on-change="Change"
       :current="current"
+      :pageSize='pageSize'
       @on-page-size-change="onPageSizeChange"
     ></Tables>
   </div>
@@ -36,19 +37,27 @@ export default {
       data: state => state.role.list,
       totalCount: state => state.role.totalCount,
       current: state => state.role.currentPage,
-      loading: state => state.role.loading
+      loading: state => state.role.loading,
+      pageSize: state => state.role.pageSize
     })
   },
   methods: {
     ...mapMutations("role", ["setCurrentPage", "setPageSize"]),
     ...mapActions("role", ["getAll"]),
     Change({ currentPage }) {
-      this.setCurrentPage({ currentPage });
       this.getAll({ page: currentPage });
     },
     onPageSizeChange({ pageSize }) {
       this.setPageSize({ pageSize });
       this.getAll({ page: this.current });
+    }
+  },
+  watch: {
+    current: {
+      deep: true,
+      handler(value) {
+        this.setCurrentPage({ currentPage: value });
+      }
     }
   },
   mounted() {
