@@ -7,6 +7,7 @@
       :total="totalCount"
       @on-change="Change"
       :current="current"
+      @on-page-size-change="onPageSizeChange"
     ></Tables>
   </div>
 </template>
@@ -16,7 +17,6 @@ import { mapMutations, mapActions, mapState } from "vuex";
 export default {
   data() {
     return {
-      loading: false,
       columns: [
         {
           type: "selection",
@@ -35,17 +35,24 @@ export default {
     ...mapState({
       data: state => state.role.list,
       totalCount: state => state.role.totalCount,
-      current: state => state.role.currentPage
+      current: state => state.role.currentPage,
+      loading: state => state.role.loading
     })
   },
   methods: {
-    Change(currentPage) {
-      this.$store.commit("setCurrentPage", { currentPage });
-      this.$store.dispatch("getAll", { page: currentPage });
+    ...mapMutations("role", ["setCurrentPage", "setPageSize"]),
+    ...mapActions("role", ["getAll"]),
+    Change({ currentPage }) {
+      this.setCurrentPage({ currentPage });
+      this.getAll({ page: currentPage });
+    },
+    onPageSizeChange({ pageSize }) {
+      this.setPageSize({ pageSize });
+      this.getAll({ page: this.current });
     }
   },
   mounted() {
-    this.$store.dispatch("getAll", { page: this.current });
+    this.$store.dispatch("role/getAll", { page: this.current });
   }
 };
 </script>

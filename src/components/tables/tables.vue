@@ -9,6 +9,7 @@
         :transfer="transfer"
         :current="current"
         @on-change="onChange"
+        @on-page-size-change="onPageSizeChange"
       />
     </div>
   </div>
@@ -44,7 +45,10 @@ export default {
   },
   methods: {
     onChange(page) {
-      this.$emit("on-change", page);
+      this.$emit("on-change", { currentPage: page});
+    },
+    onPageSizeChange(pageSize) {
+      this.$emit("on-page-size-change", { pageSize: pageSize });
     }
   }
 };
