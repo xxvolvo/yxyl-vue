@@ -50,18 +50,18 @@ export default {
   },
   methods: {
     ...mapMutations('user', ['setCurrentPage', 'setPageSize']),
-    ...mapActions('user', ['getAll']),
+    ...mapActions('user', ['getList']),
     Change ({ currentPage }) {
-      this.getAll({ page: currentPage })
+      this.getList({ page: currentPage })
     },
     onPageSizeChange ({ pageSize }) {
       this.setPageSize({ pageSize })
-      this.getAll({ page: this.current })
+      this.getList({ page: this.current })
     }
   },
 
   mounted () {
-    this.$store.dispatch('user/getAll', { page: this.current })
+    this.$store.dispatch('user/getList', { page: this.current })
   }
 }
 </script>

@@ -1,4 +1,4 @@
-import { getAll } from '@/api/role'
+import { getAll, _delete } from '@/api/role'
 
 export default {
   namespaced: true,
@@ -11,25 +11,25 @@ export default {
     extend: {}
   },
   mutations: {
-    setList (state, { list, totalCount }) {
+    setList(state, { list, totalCount }) {
       state.list = list
       state.totalCount = totalCount
     },
-    setCurrentPage (state, { currentPage }) {
+    setCurrentPage(state, { currentPage }) {
       state.currentPage = currentPage
     },
-    setLoading (state) {
+    setLoading(state) {
       state.loading = !state.loading
     },
-    setPageSize (state, { pageSize }) {
+    setPageSize(state, { pageSize }) {
       state.pageSize = pageSize
     },
-    setExtend (state, { extend }) {
+    setExtend(state, { extend }) {
       state.extend = extend
     }
   },
   actions: {
-    getAll ({ commit, state }, { page }) {
+    getList({ commit, state }, { page }) {
       commit('setLoading')
       let skipCount = (page - 1) * state.pageSize
       let maxResultCount = state.pageSize
@@ -37,13 +37,18 @@ export default {
       if (state.extend) {
         Object.assign(model, state.extend)
       }
-
       getAll(model).then(res => {
         commit('setCurrentPage', { currentPage: page })
         commit('setList', { list: res.items, totalCount: res.totalCount })
         commit('setLoading')
       }).catch(error => {
         console.log(error)
+      })
+    },
+    delete({ dispatch, commit, state }, { Id }) {
+      var page = state.currentPage
+      _delete({ Id }).then(() => {
+        dispatch('getList', { commit, state, page })
       })
     }
   }

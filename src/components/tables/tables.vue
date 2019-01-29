@@ -60,7 +60,7 @@ export default {
   methods: {
     onChange (page) {
       if (this.nameSpace) {
-        this.$store.dispatch(`${this.nameSpace}/getAll`, { page: page })
+        this.$store.dispatch(`${this.nameSpace}/getList`, { page: page })
       } else {
         this.$emit('on-change', { currentPage: page })
       }
@@ -70,7 +70,7 @@ export default {
         this.$store.commit(`${this.nameSpace}/setPageSize`, {
           pageSize: pageSize
         })
-        this.$store.dispatch(`${this.nameSpace}/getAll`, {
+        this.$store.dispatch(`${this.nameSpace}/getList`, {
           page: this.current,
           data: this.extend
         })
@@ -81,7 +81,7 @@ export default {
   },
   mounted () {
     if (this.nameSpace) {
-      this.$store.dispatch(`${this.nameSpace}/getAll`, {
+      this.$store.dispatch(`${this.nameSpace}/getList`, {
         page: this.current,
         data: this.extend
       })

@@ -7,3 +7,12 @@ export const getAll = (data) => {
     method: 'get'
   })
 }
+
+export const _delete = (data) => {
+  console.log(data)
+  return axios.request({
+    url: '/api/services/app/Role/Delete',
+    params: data,
+    method: 'delete'
+  })
+}

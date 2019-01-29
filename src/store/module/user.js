@@ -103,7 +103,7 @@ export default {
         return err
       })
     },
-    getAll ({ commit, state }, { page }) {
+    getList ({ commit, state }, { page }) {
       commit('setLoading')
       let skipCount = (page - 1) * state.pageSize
       let maxResultCount = state.pageSize
